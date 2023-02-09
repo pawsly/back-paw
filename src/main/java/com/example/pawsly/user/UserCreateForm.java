@@ -20,7 +20,7 @@ public class UserCreateForm {
     private String password1;
 
     @Size(min = 8,max = 12)
-    @NotEmpty(message = "비밀번호 확인을 꼭 입력해주세요.") //비밀번호 확인
+    @NotEmpty(message = "비밀번호 확인을 꼭 입력해주세요55555.") //비밀번호 확인
     private String password2;
 
     @NotEmpty(message = "이메일을 꼭 입력해주세요.") //이메일 작성
