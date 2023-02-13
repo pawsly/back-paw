@@ -1,4 +1,4 @@
-package com.example.pawsly.Service;
+package com.example.pawsly;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
-public class UserService {
+public class KaKaoService {
     public String getKaKaoAccessToken(String code){
         String access_Token="";
         String refresh_Token ="";
