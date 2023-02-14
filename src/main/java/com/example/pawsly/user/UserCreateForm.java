@@ -29,7 +29,7 @@ public class UserCreateForm {
 
     @Size(min = 2,max = 10)
     @NotEmpty(message = "닉네임을 꼭 입력해주세요.") //닉네임 작성
-    private String name;
+    private String username2;
 
     private String phone_number; //휴대폰 번호
     private String sex; //성별
