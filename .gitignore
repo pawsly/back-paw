@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ##ignore##
-**/application.properties
+** /application.properties
