@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .formLogin()
                 .loginPage("/user/login")
                 .loginProcessingUrl("/auth")
-                .usernameParameter("email")
+                .usernameParameter("userid")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/");
         //multipart 부분
