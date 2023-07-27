@@ -27,6 +27,21 @@ public class UserController {
         this.httpSession=httpSession;
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody User userDto) {
+        try {
+            userService.signUp(userDto);
+            String responseMessage = "User signup successfully: " + userDto;
+            System.out.println(responseMessage);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String responseJson = objectMapper.writeValueAsString(userDto);
+            return new ResponseEntity<>(responseJson, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Failed to signup: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Failed to serialize response: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
