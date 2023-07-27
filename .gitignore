@@ -38,3 +38,4 @@ out/
 
 ##ignore##
 ** /application.properties
+** /application-oauth.properties

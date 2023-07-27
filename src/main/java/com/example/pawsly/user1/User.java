@@ -20,5 +20,16 @@ public class User {
     private String phone;
     @Column(unique = true)
     private String nickname;
+    private String provider; //sns로그인 시 provider를 통해 email이 겹치지 않는지 확인
+    private String create_day;
+    private String birth;
+    private String edit_day;
+
+    public User update(String email, String name) {
+        this.name = name;
+        this.email = email;
+        return this;
+    }
+
 
 }
