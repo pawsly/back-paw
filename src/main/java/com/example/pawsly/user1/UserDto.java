@@ -33,8 +33,7 @@ public class UserDto {
         user.setPhone(phone);
         user.setNickname(nickname);
         user.setProvider(provider);
-        // 필요한 필드에 해당하는 값을 설정해주세요.
-        // 예시: user.setUser_id(user_id);
+
 
         return user;
     }
