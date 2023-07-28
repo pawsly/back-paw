@@ -46,12 +46,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
         try {
-            boolean isAuthenticated = userService.login(user.getEmail(), user.getPassword());
+            boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
             if (isAuthenticated) {
                 httpSession.setAttribute("user", user);
-                System.out.println("User login successfully: " + user.getEmail());
-
+                System.out.println("User login successfully: " + user.getUserid());
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "User login successfully");
                 return new ResponseEntity<>(response, HttpStatus.OK);

@@ -14,9 +14,10 @@ public class UserDto {
     private String phone;
     private String nickname;
     private String provider;
+    private String birth;
     @Builder
     public UserDto(String userid, String email,String password , String name, String phone ,String nickname,
-                    String provider){
+                    String provider,String birth){
         this.userid=userid;
         this.password=password;
         this.email=email;
@@ -24,6 +25,7 @@ public class UserDto {
         this.phone=phone;
         this.nickname=nickname;
         this.provider=provider;
+        this.birth=birth;
     }
 
     public User toEntity() {
@@ -33,6 +35,7 @@ public class UserDto {
         user.setPhone(phone);
         user.setNickname(nickname);
         user.setProvider(provider);
+        user.setBirth(birth);
 
 
         return user;
