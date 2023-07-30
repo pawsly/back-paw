@@ -49,10 +49,20 @@ public class UserController {
             boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
             if (isAuthenticated) {
-                httpSession.setAttribute("user", user);
-                System.out.println("User login successfully: " + user.getUserid());
+                // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
+                User loggedInUser = userService.getUserByUserid(user.getUserid());
+
+                // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> response = new HashMap<>();
-                response.put("message", "User login successfully");
+                response.put("userid", loggedInUser.getUserid());
+                response.put("email", loggedInUser.getEmail());
+                response.put("nickname", loggedInUser.getNickname());
+                response.put("name", loggedInUser.getName());
+                response.put("phone", loggedInUser.getPhone());
+                response.put("birth", loggedInUser.getBirth());
+                System.out.println("User login successfully");
+
+                // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 Map<String, String> response = new HashMap<>();
@@ -63,5 +73,6 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
 
 }
