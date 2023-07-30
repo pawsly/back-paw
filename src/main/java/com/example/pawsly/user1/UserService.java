@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 //연결
@@ -33,8 +34,8 @@ public class UserService {
         user.setName(userDto.getName());
         user.setPhone(userDto.getPhone());
         user.setNickname(userDto.getNickname());
+        user.setBirth(userDto.getBirth());
         userRepository.save(user);
-        System.out.println("User signup successfully: " + user);
     }
 
     //로그인 로직
@@ -45,6 +46,11 @@ public class UserService {
             return true; // 로그인 성공
         }
         return false;
+    }
+    //사용자 아이디를 기반으로 사용자 정보를 조회하는 메서드
+    public User getUserByUserid(String userid) {
+        Optional<User> userOptional = userRepository.findByUserid(userid);
+        return userOptional.orElse(null); // 사용자가 존재하지 않으면 null 반환
     }
 
 

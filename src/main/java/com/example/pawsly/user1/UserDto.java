@@ -37,7 +37,6 @@ public class UserDto {
         user.setProvider(provider);
         user.setBirth(birth);
 
-
         return user;
     }
 
