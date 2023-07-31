@@ -29,7 +29,7 @@ public class NaverService {
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=lgklDmIp2xU8jyG57MEv"); // TODO 네이버 클라이언트 ID 입력
             sb.append("&client_secret=SEjLhWD6CK"); // TODO 네이버 클라이언트 시크릿 입력
-            sb.append("&redirect_uri=http://localhost:8080/user/naver"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri=http://3.39.25.7:8080/user/naver"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
