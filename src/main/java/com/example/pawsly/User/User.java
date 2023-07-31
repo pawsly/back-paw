@@ -13,7 +13,7 @@ public class User {
 
     @Id
     @Column(unique = true, columnDefinition = "VARCHAR(20)")
-    private Long userid; //로그인 할 때 id
+    private String userid; //로그인 할 때 id
     @Column(unique = true)
     private String email;
     private String password;
@@ -26,7 +26,7 @@ public class User {
     private String edit_day;
 
     @Builder
-    public User(Long userid, String email,String password , String name, String phone ,String nickname
+    public User(String userid, String email,String password , String name, String phone ,String nickname
                    ,String birth){
         this.userid=userid;
         this.password=password;
