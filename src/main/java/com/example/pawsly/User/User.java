@@ -1,6 +1,5 @@
 package com.example.pawsly.User;
 
-import com.example.pawsly.OAuth.OAuthProvider;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,14 +21,13 @@ public class User {
     private String phone;
     @Column(unique = true)
     private String nickname;
-    private OAuthProvider oAuthProvider;
     private String create_day;
     private String birth;
     private String edit_day;
 
     @Builder
-    public User(Long userid, String email,String password , String name, String phone ,String nickname,
-                   OAuthProvider oAuthProvider,String birth){
+    public User(Long userid, String email,String password , String name, String phone ,String nickname
+                   ,String birth){
         this.userid=userid;
         this.password=password;
         this.email=email;
@@ -37,7 +35,6 @@ public class User {
         this.phone=phone;
         this.nickname=nickname;
         this.birth=birth;
-        this.oAuthProvider = oAuthProvider;
     }
 
     public void setPassword(String password) {

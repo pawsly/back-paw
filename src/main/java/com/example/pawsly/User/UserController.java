@@ -1,6 +1,5 @@
 package com.example.pawsly.User;
 
-import com.example.pawsly.OAuth.Token.AuthTokensGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +18,13 @@ public class UserController {
 
     private final UserService userService;
     private final HttpSession httpSession;
-    private final AuthTokensGenerator authTokensGenerator;
     private final UserRepository userRepository;
 
     @Autowired
-    public UserController(UserService userService, HttpSession httpSession,AuthTokensGenerator authTokensGenerator,
+    public UserController(UserService userService, HttpSession httpSession,
                           UserRepository userRepository){
         this.userService = userService;
         this.httpSession = httpSession;
-        this.authTokensGenerator=authTokensGenerator;
         this.userRepository=userRepository;
     }
 
@@ -77,7 +74,7 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
-
+/*
     @GetMapping("/kakao/user")
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok(userRepository.findAll());
@@ -87,5 +84,5 @@ public class UserController {
     public ResponseEntity<User> findByAccessToken(@PathVariable String accessToken) {
         Long userId = authTokensGenerator.extractUserId(accessToken);
         return ResponseEntity.ok(userRepository.findByUserid(userId).get());
-    }
+    }*/
 }
