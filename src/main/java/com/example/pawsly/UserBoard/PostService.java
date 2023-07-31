@@ -1,4 +1,4 @@
-package com.example.pawsly.userboard;
+package com.example.pawsly.UserBoard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

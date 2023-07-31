@@ -1,4 +1,4 @@
-package com.example.pawsly.userboard;
+package com.example.pawsly.UserBoard;
 
 public class PostDto {
     private Long id;

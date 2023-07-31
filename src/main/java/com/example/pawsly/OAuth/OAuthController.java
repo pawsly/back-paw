@@ -1,5 +1,4 @@
-package com.example.pawsly.OAuthService;
-
+package com.example.pawsly.OAuth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +9,8 @@ public class OAuthController {
 
     @Autowired
     KaKaoService userService;
-    @Autowired
-    NaverService naverService;
 
-    @ResponseBody
-    @PostMapping("/user/kakao")
+    @GetMapping("/user/kakao")
     public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
         System.out.println(code);
         String access_Token = userService.getKaKaoAccessToken(code);
@@ -22,7 +18,7 @@ public class OAuthController {
 
         return ResponseEntity.ok().build();
     }
-
+/*
     @ResponseBody
     @PostMapping("user/naver")
     public ResponseEntity<?> naverCallback(@RequestParam String code) throws Exception {
@@ -31,6 +27,7 @@ public class OAuthController {
         naverService.createNaverUser(access_Token);
 
         return ResponseEntity.ok().build();
-    }
+    }*/
 
 }
+
