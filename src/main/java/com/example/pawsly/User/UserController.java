@@ -1,17 +1,16 @@
-package com.example.pawsly.user1;
+package com.example.pawsly.User;
 
+import com.example.pawsly.OAuth.Token.AuthTokensGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,21 +19,26 @@ public class UserController {
 
     private final UserService userService;
     private final HttpSession httpSession;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserController(UserService userService, HttpSession httpSession){
-        this.userService=userService;
-        this.httpSession=httpSession;
+    public UserController(UserService userService, HttpSession httpSession,AuthTokensGenerator authTokensGenerator,
+                          UserRepository userRepository){
+        this.userService = userService;
+        this.httpSession = httpSession;
+        this.authTokensGenerator=authTokensGenerator;
+        this.userRepository=userRepository;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User userDto) {
+    public ResponseEntity<String> signup(@RequestBody User user) {
         try {
-            userService.signUp(userDto);
-            String responseMessage = "User signup successfully: " + userDto;
+            userService.signUp(user);
+            String responseMessage = "User signup successfully: " + user;
             System.out.println(responseMessage);
             ObjectMapper objectMapper = new ObjectMapper();
-            String responseJson = objectMapper.writeValueAsString(userDto);
+            String responseJson = objectMapper.writeValueAsString(user);
             return new ResponseEntity<>(responseJson, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Failed to signup: " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -54,7 +58,7 @@ public class UserController {
 
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> response = new HashMap<>();
-                response.put("userid", loggedInUser.getUserid());
+                response.put("userid", String.valueOf(loggedInUser.getUserid())); // Long 타입을 String으로 변환하여 맵에 저장
                 response.put("email", loggedInUser.getEmail());
                 response.put("nickname", loggedInUser.getNickname());
                 response.put("name", loggedInUser.getName());
@@ -74,5 +78,14 @@ public class UserController {
         }
     }
 
+    @GetMapping("/kakao/user")
+    public ResponseEntity<List<User>> findAll() {
+        return ResponseEntity.ok(userRepository.findAll());
+    }
 
+    @GetMapping("/{accessToken}")
+    public ResponseEntity<User> findByAccessToken(@PathVariable String accessToken) {
+        Long userId = authTokensGenerator.extractUserId(accessToken);
+        return ResponseEntity.ok(userRepository.findByUserid(userId).get());
+    }
 }
