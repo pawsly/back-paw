@@ -1,4 +1,4 @@
-package com.example.pawsly.Service;
+package com.example.pawsly.OAuth;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
-public class UserService {
+public class KaKaoService {
     public String getKaKaoAccessToken(String code){
         String access_Token="";
         String refresh_Token ="";
@@ -22,17 +22,16 @@ public class UserService {
             //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-
             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=606323578fc26ce4bfd8b2aa00d33b86"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:8080/app/users/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=a169979f19f8c09026726e9a57fc3eb2"); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=http://3.39.25.7:8080/user/kakao"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
-
+            System.out.println(bw);
             //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
@@ -100,7 +99,7 @@ public class UserService {
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
             String email = "";
             if (hasEmail) {
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString(); //여기서 null
             }
 
             System.out.println("id : " + id);
