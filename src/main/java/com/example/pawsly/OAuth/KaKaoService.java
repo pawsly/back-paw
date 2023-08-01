@@ -26,7 +26,7 @@ public class KaKaoService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=0c32c835e1296a80fcec2d3ea87bf978"); // TODO REST_API_KEY 입력
+            sb.append("&client_id=a169979f19f8c09026726e9a57fc3eb2"); // TODO REST_API_KEY 입력
             sb.append("&redirect_uri=http://3.39.25.7:8080/user/kakao"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
@@ -99,7 +99,7 @@ public class KaKaoService {
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
             String email = "";
             if (hasEmail) {
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString(); //여기서 null
             }
 
             System.out.println("id : " + id);
