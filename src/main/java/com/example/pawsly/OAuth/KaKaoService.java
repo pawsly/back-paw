@@ -27,7 +27,7 @@ public class KaKaoService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=a169979f19f8c09026726e9a57fc3eb2"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://3.39.25.7:8080/user/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri=http://localhost:8080/user/kakao"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -100,6 +100,7 @@ public class KaKaoService {
             String email = "";
             if (hasEmail) {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString(); //여기서 null
+                System.out.println(1);
             }
 
             System.out.println("id : " + id);
