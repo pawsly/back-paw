@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -12,6 +13,8 @@ import javax.persistence.*;
 public class User {
 
     @Id
+    @GeneratedValue
+    private UUID userkey; // 고유한 UUID
     @Column(unique = true, columnDefinition = "VARCHAR(20)")
     private String userid; //로그인 할 때 id
     @Column(unique = true)
@@ -28,6 +31,7 @@ public class User {
     @Builder
     public User(String userid, String email,String password , String name, String phone ,String nickname
                    ,String birth){
+        this.userkey = UUID.randomUUID();
         this.userid=userid;
         this.password=password;
         this.email=email;
