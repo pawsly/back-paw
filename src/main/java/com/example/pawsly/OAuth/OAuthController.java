@@ -11,6 +11,9 @@ public class OAuthController {
     @Autowired
     KaKaoService userService;
 
+    @Autowired
+    NaverService naverService;
+
     @GetMapping("/user/kakao")
     public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
         System.out.println(code);
@@ -23,16 +26,17 @@ public class OAuthController {
 
         return ResponseEntity.ok().build();
     }
-/*
-    @ResponseBody
-    @PostMapping("user/naver")
+    @GetMapping("/user/naver")
     public ResponseEntity<?> naverCallback(@RequestParam String code) throws Exception {
         System.out.println(code);
         String access_Token = naverService.getNaverAccessToken(code);
+        if (access_Token == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Naver access token is null.");
+        }
         naverService.createNaverUser(access_Token);
 
         return ResponseEntity.ok().build();
-    }*/
+    }
 
 }
 
