@@ -1,45 +1,64 @@
 package com.example.pawsly.UserBoard;
 
+import com.example.pawsly.User.User;
+import com.example.pawsly.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class PostService {
+
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
-    // 게시물 생성
-    public Post createPost(Post post) {
-        // 게시물 생성 로직 구현
+    public Post createPost(UUID userkey, String nickname,String title, String content) {
+        Optional<User> userOptional = userRepository.findByUserkey(userkey);
+        if (userOptional.isEmpty()) {
+            // 사용자가 없는 경우 예외 처리 또는 적절한 처리 방법 선택
+            return null;
+        }
+
+        User user = userOptional.get(); // Optional에서 User 객체 가져오기
+
+        Post post = Post.builder()
+                .userkey(user.getUserkey()) // 사용자의 userkey 사용
+                .title(title)
+                .content(content)
+                .nickname(user.getNickname())
+                .build();
+
         return postRepository.save(post);
     }
 
-    // 게시물 조회
-    public Post getPost(Long postId) {
-        // 게시물 조회 로직 구현
-        return postRepository.findById(postId).orElse(null);
-    }
-
-    // 게시물 수정
-    public Post updatePost(Long postId, Post updatedPost) {
-        // 게시물 수정 로직 구현
-        Post existingPost = postRepository.findById(postId).orElse(null);
-        if (existingPost != null) {
-            existingPost.setTitle(updatedPost.getTitle());
-            existingPost.setContent(updatedPost.getContent());
-            return postRepository.save(existingPost);
+    public Post updatePost(Long postId, String title, String content) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (postOptional.isEmpty()) {
+            // 게시물이 없는 경우 예외 처리 또는 적절한 처리 방법 선택
+            return null;
         }
-        return null;
+
+        Post post = postOptional.get();
+        post.setTitle(title);
+        post.setContent(content);
+
+        return postRepository.save(post);
     }
 
-    // 게시물 삭제
     public void deletePost(Long postId) {
-        // 게시물 삭제 로직 구현
         postRepository.deleteById(postId);
     }
 
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
+    }
 }
