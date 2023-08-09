@@ -16,21 +16,21 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
-        Post post = new Post(postDto.getTitle(), postDto.getContent(),postDto.getNickname());
-        Post createdPost = postService.createPost(post);
-        PostDto createdPostDto = new PostDto(createdPost.getId(), createdPost.getTitle(), createdPost.getContent(), createdPost.getNickname());
-        return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
+    public ResponseEntity<Post> createPost(@RequestBody Post post) {
+        Post createdPost = postService.createPost(post.getUserkey(), post.getTitle(), post.getContent(), post.getNickname());
+
+        if (createdPost != null) {
+            return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 예외 처리
+        }
     }
 
     @PutMapping("/post/{Id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Long Id, @RequestBody PostDto postDto) {
-        Post updatedPost = new Post(postDto.getTitle(), postDto.getContent(),postDto.getNickname());
-        Post updated = postService.updatePost(Id, updatedPost);
-        if (updated != null) {
-            PostDto updatedPostDto = new PostDto(updated.getId(), updated.getTitle(), updated.getContent(), updatedPost.getNickname());
-            postDto.setTitle(updatedPostDto.getTitle());
-            return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
+    public ResponseEntity<Post> updatePost(@PathVariable Long Id, @RequestBody Post post) {
+        Post updatedPost = postService.updatePost(Id, post.getTitle(), post.getContent());
+        if (updatedPost != null) {
+            return new ResponseEntity<>(updatedPost, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
