@@ -46,14 +46,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserDto userLogin, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserDto userDto, HttpServletResponse response) {
 
         try {
-            boolean isAuthenticated = userService.login(userLogin.getEmail(), userLogin.getPassword());
+            boolean isAuthenticated = userService.login(userDto.getEmail(), userDto.getPassword());
 
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
-                User loggedInUser = userService.getUserByEmail(userLogin.getEmail());
+                User loggedInUser = userService.getUserByEmail(userDto.getEmail());
                 Cookie userCookie = new Cookie("user_key", loggedInUser.getUserKey().toString()); // 쿠키 이름을 "user_key"로 변경
                 userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
                 userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)

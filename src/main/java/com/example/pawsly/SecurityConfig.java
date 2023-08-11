@@ -19,11 +19,11 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 @EnableWebSecurity
 public class SecurityConfig{
 
-
-
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**").permitAll()
+        http
+                .authorizeRequests().antMatchers("/**").permitAll()
+
                 .and()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(
