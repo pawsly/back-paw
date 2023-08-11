@@ -46,36 +46,35 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User userDto) {
-
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
         try {
-            boolean isAuthenticated = userService.login(userDto.getEmail(), userDto.getPassword());
+            boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
-                User loggedInUser = userService.getUserByEmail(userDto.getEmail());
-                System.out.println("로그인정보");
+                User loggedInUser = userService.getUserByUserid(user.getUserid());
+
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> response = new HashMap<>();
-                response.put("userid", String.valueOf(loggedInUser.getUserid())); // Long 타입을 String으로 변환하여 맵에 저장
+                response.put("userid", loggedInUser.getUserid());
                 response.put("email", loggedInUser.getEmail());
                 response.put("nickname", loggedInUser.getNickname());
                 response.put("name", loggedInUser.getName());
                 response.put("phone", loggedInUser.getPhone());
                 response.put("birth", loggedInUser.getBirth());
+                response.put("userkey", loggedInUser.getUserkey().toString());
                 System.out.println("User login successfully");
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                Map<String, String> responseBody = new HashMap<>();
-                responseBody.put("message", "Login failed");
-                return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Login failed");
+                return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
     }
 /*
     @GetMapping("/kakao/user")
