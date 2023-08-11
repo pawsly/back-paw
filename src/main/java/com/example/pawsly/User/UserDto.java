@@ -7,17 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDto {
-    private String email;
+    private String userid;
     private String password;
 
     @Builder
-    public UserDto(String email, String password) {
-        this.email = email;
+    public UserDto(String userid, String password) {
+        this.userid = userid;
         this.password = password;
     }
 
-    public String getEmail() {
-        return  email;
+    public String getuserid() {
+        return  userid;
     }
 
     public String getPassword() {

@@ -19,10 +19,12 @@ public class Board {
     private Long boardKey;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key", referencedColumnName = "userKey")
-    private User user;
+    private User user; //userKey
     private String title;
     private String content;
     private String nickname;
+    private String secret;
+    private String boardState;
 
 
 
