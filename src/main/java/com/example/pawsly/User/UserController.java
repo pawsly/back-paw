@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User userDto, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User userDto) {
 
         try {
             boolean isAuthenticated = userService.login(userDto.getEmail(), userDto.getPassword());
@@ -54,26 +54,19 @@ public class UserController {
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
                 User loggedInUser = userService.getUserByEmail(userDto.getEmail());
-                Cookie userCookie = new Cookie("user_key", loggedInUser.getUserKey().toString()); // 쿠키 이름을 "user_key"로 변경
-                userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
-                userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
-                userCookie.setPath("/"); // 쿠키의 경로 설정
-                System.out.println(userCookie);
-                response.addCookie(userCookie);
 
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
-                Map<String, String>  responseBody = new HashMap<>();
-                responseBody.put("userid", loggedInUser.getUserid());
-                responseBody.put("email", loggedInUser.getEmail());
-                responseBody.put("nickname", loggedInUser.getNickname());
-                responseBody.put("name", loggedInUser.getName());
-                responseBody.put("phone", loggedInUser.getPhone());
-                responseBody.put("birth", loggedInUser.getBirth());
-                responseBody.put("userKey", loggedInUser.getUserKey().toString());
+                Map<String, String> response = new HashMap<>();
+                response.put("userid", String.valueOf(loggedInUser.getUserid())); // Long 타입을 String으로 변환하여 맵에 저장
+                response.put("email", loggedInUser.getEmail());
+                response.put("nickname", loggedInUser.getNickname());
+                response.put("name", loggedInUser.getName());
+                response.put("phone", loggedInUser.getPhone());
+                response.put("birth", loggedInUser.getBirth());
                 System.out.println("User login successfully");
 
                 // 응답으로 맵을 보냅니다.
-                return new ResponseEntity<>(responseBody, HttpStatus.OK);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("message", "Login failed");
