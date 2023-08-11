@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserDto userDto, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User userDto, HttpServletResponse response) {
 
         try {
             boolean isAuthenticated = userService.login(userDto.getEmail(), userDto.getPassword());
