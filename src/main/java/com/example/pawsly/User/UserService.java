@@ -46,7 +46,7 @@ public class UserService {
     }
     // 로그인 실패 처리
 
-    // 사용자 아이디를 기반으로 사용자 정보를 조회하는 메서드
+    // 사용자 이메일 기반으로 사용자 정보를 조회하는 메서드
     public User getUserByEmail(String email) {
         System.out.println(1);
         Optional<User> userOptional = userRepository.findByEmail(email);

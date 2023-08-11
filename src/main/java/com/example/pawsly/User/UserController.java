@@ -46,13 +46,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserDto userDto) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
         try {
-            boolean isAuthenticated = userService.login(userDto.getEmail(), userDto.getPassword());
+            boolean isAuthenticated = userService.login(user.getEmail(), user.getPassword());
 
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
-                User loggedInUser = userService.getUserByEmail(userDto.getEmail());
+                User loggedInUser = userService.getUserByEmail(user.getEmail());
                 System.out.println(2);
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> response = new HashMap<>();
