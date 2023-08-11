@@ -54,7 +54,7 @@ public class UserController {
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
                 User loggedInUser = userService.getUserByEmail(userDto.getEmail());
-
+                System.out.println("로그인정보");
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> response = new HashMap<>();
                 response.put("userid", String.valueOf(loggedInUser.getUserid())); // Long 타입을 String으로 변환하여 맵에 저장
