@@ -48,10 +48,7 @@ public class UserService {
 
     // 사용자 이메일 기반으로 사용자 정보를 조회하는 메서드
     public User getUserByUserid(String userid) {
-        System.out.println(1);
         Optional<User> userOptional = userRepository.findByUserid(userid);
-        System.out.println(userOptional+"이메일조회");
-        System.out.println(userid);
         return userOptional.orElse(null); // 사용자가 존재하지 않으면 null 반환
     }
 

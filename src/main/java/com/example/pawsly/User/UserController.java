@@ -12,10 +12,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
 
     private final UserService userService;
     private final HttpSession httpSession;
@@ -28,6 +31,8 @@ public class UserController {
         this.httpSession = httpSession;
         this.userRepository=userRepository;
     }
+
+
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
@@ -53,13 +58,6 @@ public class UserController {
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
                 User loggedInUser = userService.getUserByUserid(user.getUserid());
-                Cookie userCookie = new Cookie("user_key", loggedInUser.getUserKey().toString()); // 쿠키 이름을 "user_key"로 변경
-                userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
-                userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
-                userCookie.setPath("/"); // 쿠키의 경로 설정
-                System.out.println(userCookie);
-                response.addCookie(userCookie);
-
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String>  responseBody = new HashMap<>();
                 responseBody.put("userid", loggedInUser.getUserid());
@@ -70,6 +68,11 @@ public class UserController {
                 responseBody.put("birth", loggedInUser.getBirth());
                 responseBody.put("userKey", loggedInUser.getUserKey().toString());
                 System.out.println("User login successfully");
+                Cookie userCookie = new Cookie("user_key", loggedInUser.getUserKey().toString()); // 쿠키 이름을 "user_key"로 변경
+                userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
+                userCookie.setPath("/"); // 쿠키의 경로 설정
+                response.addCookie(userCookie);
+                System.out.println("Cookie created: " + userCookie.getName() + "=" + userCookie.getValue());
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
@@ -81,17 +84,13 @@ public class UserController {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
     }
-/*
-    @GetMapping("/kakao/user")
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok(userRepository.findAll());
+    @GetMapping("/login/get-cookie")
+    public String getCookieValue(@CookieValue(name = "user_key", defaultValue = "no-cookie") String userKey) {
+        if (!userKey.equals("no-cookie")) {
+            return "User Key from Cookie: " + userKey;
+        } else {
+            return "No user key cookie found.";
+        }
     }
-
-    @GetMapping("/{accessToken}")
-    public ResponseEntity<User> findByAccessToken(@PathVariable String accessToken) {
-        Long userId = authTokensGenerator.extractUserId(accessToken);
-        return ResponseEntity.ok(userRepository.findByUserid(userId).get());
-    }*/
 }
