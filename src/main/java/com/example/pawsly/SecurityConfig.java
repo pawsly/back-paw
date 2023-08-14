@@ -27,7 +27,8 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
+                .cors() // CORS 설정 추가
+                .and()
                 .authorizeRequests().antMatchers("/**").permitAll()
 
                 .and()
@@ -52,7 +53,18 @@ public class SecurityConfig{
 
         return http.build();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "DELETE", "PUT", "PATCH"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
         @Bean
         PasswordEncoder passwordEncoder () {
             PasswordEncoder encoder = new BCryptPasswordEncoder();
