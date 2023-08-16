@@ -4,6 +4,8 @@ import com.example.pawsly.UserBoard.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -16,12 +18,12 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 public class User {
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Board> boardList = new ArrayList<>();
 
     @Id
-    @GeneratedValue
-    private UUID userKey; // 고유한 UUID
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @Column(unique = true, columnDefinition = "VARCHAR(36)")
+    private String userKey; // 고유한 UUID
     @Column(unique = true, columnDefinition = "VARCHAR(20)")
     private String userid;
     @Column(unique = true)
@@ -38,9 +40,9 @@ public class User {
     private String userIntro;
 
     @Builder
-    public User(UUID userKey,String userid, String email,String password , String name, String phone ,String nickname
+    public User(String userid, String email,String password , String name, String phone ,String nickname
                    ,String birth,LocalDateTime createDay){
-        this.userKey = UUID.randomUUID();
+        this.userKey = UUID.randomUUID().toString();
         this.userid=userid;
         this.password=password;
         this.email=email;

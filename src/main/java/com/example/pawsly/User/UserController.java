@@ -68,6 +68,7 @@ public class UserController {
                 responseBody.put("birth", loggedInUser.getBirth());
                 responseBody.put("userKey", loggedInUser.getUserKey().toString());
                 System.out.println("User login successfully");
+
                 Cookie userCookie = new Cookie("user_key", loggedInUser.getUserKey().toString()); // 쿠키 이름을 "user_key"로 변경
                 userCookie.setMaxAge(3600); // 쿠키 유효 시간 설정 (초 단위)
                 userCookie.setPath("/"); // 쿠키의 경로 설정
