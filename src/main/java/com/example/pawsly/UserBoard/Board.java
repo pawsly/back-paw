@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -17,24 +18,27 @@ public class Board {
     @Id
     @GeneratedValue
     private Long boardKey;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_key", referencedColumnName = "userKey")
-    private User user; //userKey
+    private String writer; //userKey
     private String title;
     private String content;
     private String nickname;
-    private String secret;
-    private String boardState;
+    private String secret; //비밀글 여부
+    private String boardState; //임시글 여부
+    private LocalDateTime createdBd; //게시물 작성일
+    private LocalDateTime lastModifiedBd; //게시물 수정일
+    private String category;
+
 
 
 
     @Builder
-    public Board(Long boardKey, User user, String title , String content, String nickname){
+    public Board(Long boardKey, String writer, String title , String content, String nickname,String category){
         this.boardKey=boardKey;
         this.title=title;
         this.content=content;
         this.nickname=nickname;
-        this.user=user;
+        this.writer=writer;
+        this.category=category;
     }
     public Board() {
     }
