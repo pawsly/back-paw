@@ -10,7 +10,9 @@ import java.util.UUID;
 
 
 @Repository
-public interface BoardRepository extends JpaRepository<Board,Long> {
+public interface BoardRepository extends JpaRepository<Board,String> {
     List<Board> findAllByWriter(String writer);
-    void deleteByBoardKey(Long boardKey);
+    void deleteByBoardKey(String boardKey);
+
+    List<Board> findByWriter(String writer);
 }

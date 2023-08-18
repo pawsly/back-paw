@@ -4,6 +4,7 @@ import com.example.pawsly.User.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -16,8 +17,10 @@ import java.util.UUID;
 public class Board {
 
     @Id
-    @GeneratedValue
-    private Long boardKey;
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @Column(unique = true, columnDefinition = "VARCHAR(36)")
+    private String boardKey;
     private String writer; //userKey
     private String title;
     private String content;
@@ -26,13 +29,14 @@ public class Board {
     private String boardState; //임시글 여부
     private LocalDateTime createdBd; //게시물 작성일
     private LocalDateTime lastModifiedBd; //게시물 수정일
+
     private String category;
 
 
 
 
     @Builder
-    public Board(Long boardKey, String writer, String title , String content, String nickname,String category){
+    public Board(String boardKey, String writer, String title , String content, String nickname,String category){
         this.boardKey=boardKey;
         this.title=title;
         this.content=content;
@@ -42,6 +46,8 @@ public class Board {
     }
     public Board() {
     }
-
+    public String getSecret() {
+        return this.secret;
+    }
 
 }
