@@ -5,11 +5,15 @@ import com.example.pawsly.User.User;
 import com.example.pawsly.User.UserRepository;
 import com.example.pawsly.UserBoard.Dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BoardService {
@@ -21,12 +25,34 @@ public class BoardService {
         this.boardRepository=boardRepository;
         this.userRepository=userRepository;
     }
+    //전체 게시물 출력
     public List<Board> getAllPosts() {
-        return boardRepository.findAll();
+        List<Board> allPosts = boardRepository.findAll();
+        List<Board> visiblePosts = new ArrayList<>(); // 비밀글은 제외
+
+        if (allPosts != null) {
+            for (Board board : allPosts) {
+                if (board != null && board.getSecret() != null && !board.getSecret().equals("Y")) {
+                    visiblePosts.add(board);
+                }
+            }
+        }
+        return visiblePosts;
+    }
+    //개인피드 출력
+    public List<Board> getPostsByWriter(String writer, String userKey) {
+        if (writer.equals(userKey)) {
+            System.out.println(1);
+            return boardRepository.findByWriter(writer);
+        } else {
+            // 사용자 키와 작성자가 일치하지 않는 경우 처리
+            System.out.println("일치하지않음");
+            return Collections.emptyList();
+        }
     }
 
-    public String createPost(PostDto postDto, String userKey) {
-        if (!userKey.isEmpty()) {
+
+    public Board createPost(PostDto postDto, String userKey) throws UsernameNotFoundException {
             User user = userRepository.findByUserKey(userKey);
             if (user != null) {
                 // User 엔티티에서 nickname 가져오기
@@ -41,15 +67,13 @@ public class BoardService {
                 board.setWriter(userKey); // UUID를 String으로 저장
                 boardRepository.save(board);
 
-                return "Post created successfully!";
+                return board;
             } else {
-                return "User not found.";
+                throw new UsernameNotFoundException("User not found.");
             }
-        } else {
-            return "No user_key cookie found.";
         }
-    }
-    public String updatePost(Long boardKey, PostDto postDto, String userKey) {
+
+    public Board updatePost(String boardKey, PostDto postDto, String userKey) {
         Optional<Board> optionalBoard = boardRepository.findById(boardKey);
         if (optionalBoard.isPresent()) {
             Board board = optionalBoard.get();
@@ -58,17 +82,17 @@ public class BoardService {
                 board.setTitle(postDto.getTitle());
                 board.setContent(postDto.getContent());
                 // ... 기타 필요한 수정 작업 수행
-                boardRepository.save(board);
-                return "Post updated successfully!";
+                Board updatedBoard = boardRepository.save(board);
+                return updatedBoard;
             } else {
-                return "You don't have permission to update this post.";
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission to update this post.");
             }
         } else {
-            return "Post not found.";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found.");
         }
     }
 
-    public String deletePost(Long boardKey, String userKey) {
+    public String deletePost(String boardKey, String userKey) {
         Optional<Board> optionalBoard = boardRepository.findById(boardKey);
         if (optionalBoard.isPresent()) {
             Board board = optionalBoard.get();
