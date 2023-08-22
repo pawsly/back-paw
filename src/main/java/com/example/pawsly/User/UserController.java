@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +60,8 @@ public class UserController {
             if (isAuthenticated) {
                 // 사용자가 로그인에 성공했을 때, 로그인한 사용자 정보를 가져옵니다.
                 User loggedInUser = userService.getUserByUserid(user.getUserid());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(loggedInUser, null, new ArrayList<>());
+                TokenInfo tokens = jwtTokenProvider.generateToken(authentication);
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("userid", loggedInUser.getUserid());
@@ -67,6 +71,8 @@ public class UserController {
                 responseBody.put("phone", loggedInUser.getPhone());
                 responseBody.put("birth", loggedInUser.getBirth());
                 responseBody.put("userKey", loggedInUser.getUserKey().toString());
+                responseBody.put("accessToken", tokens.getAccessToken());
+                responseBody.put("refreshToken", tokens.getRefreshToken());
                 System.out.println("User login successfully");
 
                 // 응답으로 맵을 보냅니다.
