@@ -39,6 +39,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT API 모듈
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 구현 모듈
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT Jackson 모듈 (옵션)
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' // 또는 최신 버전
+	implementation 'io.springfox:springfox-boot-starter:3.0.0' // Springfox Swagger 라이브러리 추가
+
 
 }
 
