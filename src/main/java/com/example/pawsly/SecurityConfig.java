@@ -4,7 +4,6 @@ package com.example.pawsly;
 import com.example.pawsly.Jwt.JwtAuthenticationFilter;
 import com.example.pawsly.Jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

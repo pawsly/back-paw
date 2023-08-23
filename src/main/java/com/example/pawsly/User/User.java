@@ -1,20 +1,18 @@
 package com.example.pawsly.User;
 
-import com.example.pawsly.UserBoard.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class User {
@@ -51,12 +49,6 @@ public class User {
         this.nickname=nickname;
         this.birth=birth;
         this.createDay=createDay;
-    }
-
-
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Object getUserKey() {
