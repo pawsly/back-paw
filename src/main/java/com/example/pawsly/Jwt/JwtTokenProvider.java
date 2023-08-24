@@ -39,8 +39,9 @@ public class JwtTokenProvider {
      */
 
     public TokenInfo generateToken(Authentication authentication) {
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String authorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
@@ -48,7 +49,8 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(userDetails.getUsername())
+                .claim("userKey", userDetails.getUsername())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -67,14 +69,20 @@ public class JwtTokenProvider {
                 .build();
     }
 
+
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
-        // 토큰 복호화
         Claims claims = parseClaims(accessToken);
+
+        if (claims == null) {
+            throw new RuntimeException("Token claims could not be parsed.");
+        }
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
+
+        String userKey = claims.get("userKey", String.class);
 
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
@@ -83,7 +91,7 @@ public class JwtTokenProvider {
                         .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new User(userKey, "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
@@ -104,11 +112,20 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+    public String extractUserKeyFromToken(String token) {
+        Claims claims = parseClaims(token);
+
+        if (claims == null) {
+            throw new RuntimeException("Token claims could not be parsed.");
+        }
+
+        return claims.get("userKey", String.class);
     }
 }

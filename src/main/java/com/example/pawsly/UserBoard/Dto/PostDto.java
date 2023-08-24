@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class PostDto {
+    private String boardKey;
     private String title;
     private String content;
     private String writer;
@@ -22,6 +23,13 @@ public class PostDto {
     }
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getBoardKey() {
+        return boardKey;
+    }
+    public void setBoardKey(String boardKey) {
+        this.boardKey = boardKey;
     }
 
 }
