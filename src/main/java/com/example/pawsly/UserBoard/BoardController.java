@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,24 +27,48 @@ public class BoardController {
         this.jwtTokenProvider = jwtTokenProvider;
         this.boardService= boardService;
     }
-    @PostMapping("/post")
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String authToken) {
-
-        // 작성한 게시물 내용을 생성하여 리턴
-        PostDto createdPostDto = boardService.createPost(postDto, authToken);
-
-        createdPostDto.setTitle(postDto.getTitle());
-        createdPostDto.setContent(postDto.getContent());
-        createdPostDto.setNickname(postDto.getNickname());
-        System.out.println(postDto.getNickname()+"+입니다");
-        createdPostDto.setSecret(postDto.getSecret());
-        createdPostDto.setBoardState(postDto.getBoardState());
-        createdPostDto.setWriter(postDto.getWriter());
-        System.out.println(postDto.getWriter()+"야");
-        createdPostDto.setCreatedBd(LocalDateTime.now());
-
-        return ResponseEntity.ok(createdPostDto);
+    //전체피드
+    @GetMapping("/list")
+    public List<Board> getAllPosts() {
+        return boardService.getAllPosts();
     }
+    //개인 피드
+
+    @GetMapping("/list/writer")
+    public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String authToken) {
+        return boardService.getPostsByUser(authToken); // 메서드명 변경
+    }
+
+    //게시물 작성
+    @PostMapping("/post")
+    public ResponseEntity<Board> createPost(@RequestBody Board board, @RequestHeader("Authorization") String authToken) {
+        Board createdBoard = boardService.createPost(board, authToken);
+        return ResponseEntity.ok(createdBoard);
+    }
+
+    // 게시물 수정
+    @PutMapping("/post/{boardKey}")
+    public ResponseEntity<Board> updatePost(
+            @PathVariable String boardKey,
+            @RequestBody Board updatedBoard,
+            @RequestHeader("Authorization") String authToken) {
+
+        Board updatedPost = boardService.updatePost(boardKey, updatedBoard, authToken);
+
+        return ResponseEntity.ok(updatedPost);
+    }
+
+    @DeleteMapping("/post/{boardKey}")
+    public ResponseEntity<String> deletePost(
+            @PathVariable String boardKey,
+            @RequestHeader("Authorization") String authToken) {
+
+        boardService.deletePost(boardKey, authToken);
+
+        return ResponseEntity.ok("Post deleted successfully");
+    }
+
+
 
 
 }

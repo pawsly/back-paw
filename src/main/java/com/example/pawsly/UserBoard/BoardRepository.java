@@ -10,6 +10,7 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board,String> {
     List<Board> findAllByWriter(String writer);
     void deleteByBoardKey(String boardKey);
+    Board findByBoardKey(String boardKey);
 
     List<Board> findByWriter(String writer);
 }

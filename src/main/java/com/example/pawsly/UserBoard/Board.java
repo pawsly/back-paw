@@ -47,5 +47,12 @@ public class Board {
     public String getSecret() {
         return this.secret;
     }
+    public LocalDateTime getLastModifiedBd() {
+        return lastModifiedBd;
+    }
+
+    public void setLastModifiedBd(LocalDateTime lastModifiedBd) {
+        this.lastModifiedBd = lastModifiedBd;
+    }
 
 }

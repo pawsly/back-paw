@@ -6,12 +6,15 @@ import com.example.pawsly.User.User;
 import com.example.pawsly.User.UserRepository;
 import com.example.pawsly.UserBoard.Dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -30,43 +33,106 @@ public class BoardService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
+    //비밀글 제외 전체 게시물 출력
+    public List<Board> getAllPosts() {
+        List<Board> allPosts = boardRepository.findAll();
+        List<Board> visiblePosts = new ArrayList<>(); // 비밀글은 제외
 
-    public PostDto createPost(PostDto postDto, String authToken) {
+        if (allPosts != null) {
+            for (Board board : allPosts) {
+                if (board != null && board.getSecret() != null && !board.getSecret().equals("Y")) {
+                    visiblePosts.add(board);
+                }
+            }
+        }
+        return visiblePosts;
+    }
+    //개인피드
+    public List<Board> getPostsByUser(String authToken) {
         String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
 
-        // Authentication 객체를 통해 현재 로그인한 사용자의 정보를 가져옴
+        List<Board> userBoards = boardRepository.findByWriter(userKeyFromToken);
+
+        return userBoards;
+    }
+
+    // 게시물 작성
+    public Board createPost(Board board, String authToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+        if (userKeyFromToken == null) {
+            throw new RuntimeException("Invalid token or userKey not found in token.");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated()) {
             throw new RuntimeException("User not authenticated.");
         }
 
-        // UserKey로부터 User 정보를 가져옴
         User user = userRepository.findByUserKey(userKeyFromToken);
         if (user == null) {
             throw new UsernameNotFoundException("User not found.");
         }
 
-        // 현재 로그인한 사용자의 userKey
-        postDto.setWriter(userKeyFromToken);  // 작성자 정보 설정
-        postDto.setNickname(user.getNickname());  // 닉네임 설정
-        postDto.setCreatedBd(LocalDateTime.now());
+        board.setWriter(userKeyFromToken);
+        board.setNickname(user.getNickname());
+        board.setCreatedBd(LocalDateTime.now());
 
-        // 게시물 저장
-        Board board = new Board();
-        board.setTitle(postDto.getTitle());
-        board.setContent(postDto.getContent());
-        board.setNickname(postDto.getNickname());
-        board.setSecret(postDto.getSecret());
-        board.setBoardState(postDto.getBoardState());
-        board.setWriter(postDto.getWriter());
-        board.setCreatedBd(postDto.getCreatedBd());
-        boardRepository.save(board);
+        Board createdBoard = boardRepository.save(board); // 저장 후 생성된 board 반환
 
-        return postDto;
+        return createdBoard;
     }
+
+
+    // 게시물 수정
+    public Board updatePost(String boardKey, Board updatedBoard, String authToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+        if (userKeyFromToken == null) {
+            throw new RuntimeException("Invalid token or userKey not found in token.");
+        }
+
+        Optional<Board> existingBoardOptional = boardRepository.findById(boardKey);
+        if (existingBoardOptional.isEmpty()) {
+            throw new RuntimeException("Board not found.");
+        }
+
+        Board existingBoard = existingBoardOptional.get();
+        if (!existingBoard.getWriter().equals(userKeyFromToken)) {
+            throw new RuntimeException("You don't have permission to update this post.");
+        }
+
+        // 업데이트할 필드만 설정
+        existingBoard.setTitle(updatedBoard.getTitle());
+        existingBoard.setContent(updatedBoard.getContent());
+        existingBoard.setLastModifiedBd(LocalDateTime.now()); // 수정된 부분
+
+        return boardRepository.save(existingBoard);
+    }
+
+    public void deletePost(String boardKey, String authToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+        if (userKeyFromToken == null) {
+            throw new RuntimeException("Invalid token or userKey not found in token.");
+        }
+
+        Optional<Board> existingBoardOptional = boardRepository.findById(boardKey);
+        if (existingBoardOptional.isEmpty()) {
+            throw new RuntimeException("Board not found.");
+        }
+
+        Board existingBoard = existingBoardOptional.get();
+        if (!existingBoard.getWriter().equals(userKeyFromToken)) {
+            throw new RuntimeException("You don't have permission to delete this post.");
+        }
+
+        boardRepository.delete(existingBoard);
+    }
+
+
+
+
 }
 
 
