@@ -28,19 +28,19 @@ public class Board {
     private LocalDateTime createdBd; //게시물 작성일
     private LocalDateTime lastModifiedBd; //게시물 수정일
 
-    private String category;
+    private String categoryKey;
 
 
 
 
     @Builder
-    public Board(String boardKey, String writer, String title , String content, String nickname,String category){
+    public Board(String boardKey, String writer, String title , String content, String nickname,String categoryKey){
         this.boardKey=boardKey;
         this.title=title;
         this.content=content;
         this.nickname=nickname;
         this.writer=writer;
-        this.category=category;
+        this.categoryKey=categoryKey;
     }
     public Board() {
     }
