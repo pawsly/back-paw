@@ -4,6 +4,7 @@ import com.example.pawsly.Jwt.JwtTokenProvider;
 import com.example.pawsly.Jwt.TokenInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,11 @@ public class UserController {
                 User loggedInUser = userService.getUserByUserid(user.getUserid());
                 Authentication authentication = new UsernamePasswordAuthenticationToken(loggedInUser, null, new ArrayList<>());
                 TokenInfo tokens = jwtTokenProvider.generateToken(authentication);
+                Claims claims = jwtTokenProvider.parseClaims(tokens.getAccessToken());
+                System.out.println("Decoded Token Payload:");
+                System.out.println("Subject (Username): " + claims.getSubject());
+                System.out.println("Authorities: " + claims.get("auth"));
+
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("userid", loggedInUser.getUserid());

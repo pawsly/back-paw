@@ -1,66 +1,49 @@
 package com.example.pawsly.UserBoard;
 
+import com.example.pawsly.Jwt.JwtTokenProvider;
+import com.example.pawsly.User.User;
 import com.example.pawsly.UserBoard.Dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/board")
 public class BoardController {
 
+    private final BoardRepository boardRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     private final BoardService boardService;
 
     @Autowired
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
+    public BoardController(BoardRepository boardRepository, JwtTokenProvider jwtTokenProvider, BoardService boardService) {
+        this.boardRepository = boardRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.boardService= boardService;
     }
-
-    //전체 게시물 리스트 출력 --> 비밀글제외
-    @GetMapping("/list")
-    public List<Board> getAllPosts() {
-        return boardService.getAllPosts();
-    }
-
-    //개인 게시물 출력
-    @GetMapping("/list/{writer}")
-    public List<Board> getPostsByWriter(
-            @PathVariable String writer,
-            @CookieValue(value = "user_key", defaultValue = "") String userKey
-    ) {
-        return boardService.getPostsByWriter(writer, userKey);
-    }
-
-
     @PostMapping("/post")
-    public ResponseEntity<?> createPost(@RequestBody PostDto postDto, @CookieValue(value = "user_key", defaultValue = "") String userKey) {
-        Board createdPost = boardService.createPost(postDto, userKey);
+    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String authToken) {
 
-        if (createdPost != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create post.");
-        }
-    }
-    //쿠키인 경우
-    @PutMapping("/post/{boardKey}")
-    public Board updatePost(
-            @PathVariable String boardKey,
-            @RequestBody PostDto postDto,
-            @CookieValue(value = "user_key", defaultValue = "") String userKey
-    ) {
-        return boardService.updatePost(boardKey, postDto, userKey);
+        // 작성한 게시물 내용을 생성하여 리턴
+        PostDto createdPostDto = boardService.createPost(postDto, authToken);
+
+        createdPostDto.setTitle(postDto.getTitle());
+        createdPostDto.setContent(postDto.getContent());
+        createdPostDto.setNickname(postDto.getNickname());
+        System.out.println(postDto.getNickname()+"+입니다");
+        createdPostDto.setSecret(postDto.getSecret());
+        createdPostDto.setBoardState(postDto.getBoardState());
+        createdPostDto.setWriter(postDto.getWriter());
+        System.out.println(postDto.getWriter()+"야");
+        createdPostDto.setCreatedBd(LocalDateTime.now());
+
+        return ResponseEntity.ok(createdPostDto);
     }
 
 
-    @DeleteMapping("/post/{boardKey}")
-    public String deletePost(
-            @PathVariable String boardKey,
-            @CookieValue(value = "user_key", defaultValue = "") String userKey
-    ) {
-        return boardService.deletePost(boardKey, userKey);
-    }
 }
