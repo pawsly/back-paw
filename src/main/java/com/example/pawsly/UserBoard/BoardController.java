@@ -32,10 +32,11 @@ public class BoardController {
     public List<Board> getAllPosts() {
         return boardService.getAllPosts();
     }
-    //개인 피드
 
+    //개인 피드
     @GetMapping("/list/writer")
     public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String authToken) {
+        System.out.println(authToken);
         return boardService.getPostsByUser(authToken); // 메서드명 변경
     }
 

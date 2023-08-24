@@ -50,6 +50,8 @@ public class BoardService {
     //개인피드
     public List<Board> getPostsByUser(String authToken) {
         String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+        System.out.println(authToken+"이건 추출한 토큰");
+        System.out.println(userKeyFromToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
