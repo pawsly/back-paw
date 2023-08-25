@@ -59,6 +59,7 @@ public class BoardService {
     public Board createPost(Board board, String authToken) {
         String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
         if (userKeyFromToken == null) {
+            System.out.println("userKeyFromToken:"+userKeyFromToken);
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
 
