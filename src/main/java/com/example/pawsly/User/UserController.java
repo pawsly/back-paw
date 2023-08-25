@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user, HttpServletResponse response) {
         try {
             boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
@@ -61,9 +62,6 @@ public class UserController {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(loggedInUser, null, new ArrayList<>());
                 TokenInfo tokens = jwtTokenProvider.generateToken(authentication);
                 Claims claims = jwtTokenProvider.parseClaims(tokens.getAccessToken());
-                System.out.println("Decoded Token Payload:");
-                System.out.println("Subject (Username): " + claims.getSubject());
-                System.out.println("Authorities: " + claims.get("auth"));
 
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> responseBody = new HashMap<>();
@@ -73,10 +71,7 @@ public class UserController {
                 responseBody.put("name", loggedInUser.getName());
                 responseBody.put("phone", loggedInUser.getPhone());
                 responseBody.put("birth", loggedInUser.getBirth());
-                responseBody.put("userKey", loggedInUser.getUserKey().toString());
-                responseBody.put("accessToken", tokens.getAccessToken());
-                responseBody.put("refreshToken", tokens.getRefreshToken());
-                System.out.println("User login successfully");
+                responseBody.put("userKey", loggedInUser.getUserKey());
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
