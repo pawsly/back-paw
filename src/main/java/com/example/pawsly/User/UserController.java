@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+    //커밋 테스트
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
