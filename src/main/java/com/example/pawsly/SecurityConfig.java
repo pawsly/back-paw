@@ -62,10 +62,10 @@ public class SecurityConfig{
         return http.build();
     }
 
-        @Bean
-        PasswordEncoder passwordEncoder () {
-            PasswordEncoder encoder = new BCryptPasswordEncoder();
-            return new BCryptPasswordEncoder();
-        }
+    @Bean
+    PasswordEncoder passwordEncoder () {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
+}
 

@@ -22,19 +22,16 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
-    //커밋 테스트
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenService refreshTokenService; // RefreshTokenService 추가
 
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
-                          UserRepository userRepository,RefreshTokenService refreshTokenService) {
+                          UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.refreshTokenService = refreshTokenService;
     }
 
 
@@ -55,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
         try {
             boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
@@ -82,7 +79,6 @@ public class UserController {
                 responseBody.put("refreshToken", tokens.getRefreshToken());
                 System.out.println("User login successfully");
 
-
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
             } else {
@@ -94,6 +90,12 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+    @PostMapping("/test")
+    public String test() {
+        return "success";
+    }
+}
+    /*
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refreshTokens(@RequestBody Map<String, String> requestMap) {
         String refreshToken = requestMap.get("refreshToken");
@@ -111,8 +113,8 @@ public class UserController {
             responseBody.put("message", "Failed to refresh tokens");
             return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-}
+    }*/
+
 
 /*
     @GetMapping("/login/get-cookie")
