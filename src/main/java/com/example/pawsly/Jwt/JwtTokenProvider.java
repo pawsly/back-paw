@@ -68,6 +68,19 @@ public class JwtTokenProvider {
                 .refreshToken(refreshToken)
                 .build();
     }
+    public String refreshAccessToken(String refreshToken) {
+        Claims refreshTokenClaims = parseClaims(refreshToken);
+
+        if (refreshTokenClaims == null) {
+            throw new RuntimeException("Refresh token claims could not be parsed.");
+        }
+
+        String userKey = refreshTokenClaims.getSubject();
+        UserDetails userDetails = new User(userKey, "", new ArrayList<>());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, new ArrayList<>());
+        return generateToken(authentication).getAccessToken();
+    }
+
 
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
