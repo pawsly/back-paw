@@ -37,6 +37,7 @@ public class BoardController {
     //게시물 작성
     @PostMapping("/post")
     public ResponseEntity<Board> createPost(@RequestBody Board board, @RequestHeader("Authorization") String authToken) {
+        System.out.println("Received Authorization Header: " + authToken);
         Board createdBoard = boardService.createPost(board, authToken);
         return ResponseEntity.ok(createdBoard);
     }
