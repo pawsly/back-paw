@@ -77,6 +77,7 @@ public class UserController {
                 responseBody.put("userKey", loggedInUser.getUserKey());
                 responseBody.put("accessToken", tokens.getAccessToken());
                 responseBody.put("refreshToken", tokens.getRefreshToken());
+                System.out.println("User login Successfully");
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
