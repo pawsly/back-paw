@@ -37,17 +37,9 @@ public class BoardController {
     //개인 피드
     @GetMapping("/list/writer")
     public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String authToken) {
-        System.out.println(authToken); // authToken 값 출력하여 확인
-
-        String tokenPrefix = "Bearer ";
-        if (authToken != null && authToken.startsWith(tokenPrefix)) {
-            String token = authToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
-            System.out.println("Extracted Token: " + token);
-
-            return boardService.getPostsByUser(token); // 토큰 값 전달하여 처리
-        } else {
-            throw new RuntimeException("Invalid Authorization header format");
-        }
+        System.out.println(authToken);
+        System.out.println("개인피드 출력 완료");
+        return boardService.getPostsByUser(authToken);
     }
 
 
