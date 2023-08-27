@@ -45,7 +45,6 @@ public class UserService {
     }
 
     // 로그인 로직
-    // 로그인 로직
     public boolean login(String userid, String password) throws IllegalAccessException {
         Optional<User> userOptional = userRepository.findByUserid(userid);
         // 사용자 ID로 사용자 조회

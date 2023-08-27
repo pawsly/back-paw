@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +26,15 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService; // RefreshTokenService 추가
 
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,RefreshTokenService refreshTokenService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenService = refreshTokenService;
     }
 
 
@@ -52,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user, HttpServletResponse response) {
         try {
             boolean isAuthenticated = userService.login(user.getUserid(), user.getPassword());
 
@@ -62,9 +65,6 @@ public class UserController {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(loggedInUser, null, new ArrayList<>());
                 TokenInfo tokens = jwtTokenProvider.generateToken(authentication);
                 Claims claims = jwtTokenProvider.parseClaims(tokens.getAccessToken());
-                System.out.println("Decoded Token Payload:");
-                System.out.println("Subject (Username): " + claims.getSubject());
-                System.out.println("Authorities: " + claims.get("auth"));
 
                 // 프론트엔드로 응답할 사용자 정보를 담을 맵을 생성합니다.
                 Map<String, String> responseBody = new HashMap<>();
@@ -74,10 +74,7 @@ public class UserController {
                 responseBody.put("name", loggedInUser.getName());
                 responseBody.put("phone", loggedInUser.getPhone());
                 responseBody.put("birth", loggedInUser.getBirth());
-                responseBody.put("userKey", loggedInUser.getUserKey().toString());
-                responseBody.put("accessToken", tokens.getAccessToken());
-                responseBody.put("refreshToken", tokens.getRefreshToken());
-                System.out.println("User login successfully");
+                responseBody.put("userKey", loggedInUser.getUserKey());
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
@@ -90,12 +87,6 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
-}
-    /*
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refreshTokens(@RequestBody Map<String, String> requestMap) {
         String refreshToken = requestMap.get("refreshToken");
@@ -113,16 +104,6 @@ public class UserController {
             responseBody.put("message", "Failed to refresh tokens");
             return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
-
-
-/*
-    @GetMapping("/login/get-cookie")
-    public String getCookieValue(@CookieValue(name = "user_key", defaultValue = "no-cookie") String userKey) {
-        if (!userKey.equals("no-cookie")) {
-            return "User Key from Cookie: " + userKey;
-        } else {
-            return "No user key cookie found.";
-        }
-    }*/
+    }
+}
 
