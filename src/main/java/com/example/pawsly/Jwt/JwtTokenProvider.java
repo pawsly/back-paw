@@ -40,6 +40,7 @@ public class JwtTokenProvider {
 
     public TokenInfo generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userKey = authentication.getName(); // 예를 들어, Principal이 사용자의 userKey인 경우
 
         String authorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -49,8 +50,7 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .claim("userKey", userDetails.getUsername())
+                .setSubject(userKey) // userKey 값을 넣어줌
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -127,8 +127,10 @@ public class JwtTokenProvider {
     public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+
         }
     }
     public String extractUserKeyFromToken(String token) {
