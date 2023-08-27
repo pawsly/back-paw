@@ -40,8 +40,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         String bearerToken = request.getHeader("Authorization");
         System.out.println("헤더에서 토큰 받아옴");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            System.out.println("bearerToken:"+bearerToken);
-            return bearerToken.substring(7).trim();
+            String sanitizedToken = bearerToken.substring(7).replaceAll("\\s+", "");
+            System.out.println("bearer제외한 Token:" + sanitizedToken);
+            return sanitizedToken;
         }
         return null;
     }
