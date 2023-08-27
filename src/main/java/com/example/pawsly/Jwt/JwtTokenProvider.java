@@ -137,6 +137,7 @@ public class JwtTokenProvider {
         if (claims == null) {
             throw new RuntimeException("Token claims could not be parsed.");
         }
+        System.out.println("토큰에서 유저정보추출:"+token);
 
         return claims.get("userKey", String.class);
     }
