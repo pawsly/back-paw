@@ -30,6 +30,7 @@ public class BoardController {
     //전체피드
     @GetMapping("/list")
     public List<Board> getAllPosts() {
+        System.out.println("전체피드 출력 완료");
         return boardService.getAllPosts();
     }
 
@@ -37,6 +38,7 @@ public class BoardController {
     @GetMapping("/list/writer")
     public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String authToken) {
         System.out.println(authToken);
+        System.out.println("개인피드 출력 완료");
         return boardService.getPostsByUser(authToken); // 메서드명 변경
     }
 
@@ -44,6 +46,7 @@ public class BoardController {
     @PostMapping("/post")
     public ResponseEntity<Board> createPost(@RequestBody Board board, @RequestHeader("Authorization") String authToken) {
         Board createdBoard = boardService.createPost(board, authToken);
+        System.out.println("게시물 작성 완료");
         return ResponseEntity.ok(createdBoard);
     }
 
@@ -55,7 +58,7 @@ public class BoardController {
             @RequestHeader("Authorization") String authToken) {
 
         Board updatedPost = boardService.updatePost(boardKey, updatedBoard, authToken);
-
+        System.out.println("게시물 수정 완료");
         return ResponseEntity.ok(updatedPost);
     }
 
@@ -65,7 +68,7 @@ public class BoardController {
             @RequestHeader("Authorization") String authToken) {
 
         boardService.deletePost(boardKey, authToken);
-
+        System.out.println("게시물 삭제 완료");
         return ResponseEntity.ok("Post deleted successfully");
     }
 
