@@ -75,6 +75,8 @@ public class UserController {
                 responseBody.put("phone", loggedInUser.getPhone());
                 responseBody.put("birth", loggedInUser.getBirth());
                 responseBody.put("userKey", loggedInUser.getUserKey());
+                responseBody.put("accessToken", tokens.getAccessToken());
+                responseBody.put("refreshToken", tokens.getRefreshToken());
 
                 // 응답으로 맵을 보냅니다.
                 return new ResponseEntity<>(responseBody, HttpStatus.OK);
