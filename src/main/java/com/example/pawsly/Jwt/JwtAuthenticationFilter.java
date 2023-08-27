@@ -38,11 +38,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     // Request Header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        System.out.println("헤더에서 토큰 받아옴");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            String sanitizedToken = bearerToken.substring(7).replaceAll("\\s+", "");
-            System.out.println("bearer제외한 Token:" + sanitizedToken);
-            return sanitizedToken;
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 제거하지 않도록 수정
         }
         return null;
     }
