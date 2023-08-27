@@ -68,7 +68,7 @@ public class BoardController {
             @RequestHeader("Authorization") String authToken) {
 
         boardService.deletePost(boardKey, authToken);
-
+        System.out.println("게시물 삭제 완료");
         return ResponseEntity.ok("Post deleted successfully");
     }
 
