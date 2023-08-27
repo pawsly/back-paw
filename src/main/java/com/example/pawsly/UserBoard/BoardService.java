@@ -64,6 +64,7 @@ public class BoardService {
     // 게시물 작성
     public Board createPost(Board board, String authToken) {
         String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+        System.out.println("게시물작성:"+authToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
