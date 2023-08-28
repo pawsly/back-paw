@@ -19,7 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowCredentials(true);
         corsConfig.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인 설정
-        corsConfig.addAllowedHeader("Authorization");
+        corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("POST");
         corsConfig.addAllowedMethod("GET");
         corsConfig.addAllowedMethod("DELETE");
