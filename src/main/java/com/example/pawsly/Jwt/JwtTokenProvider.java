@@ -50,7 +50,8 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
-                .setSubject(userKey) // userKey 값을 넣어줌
+                .setSubject(userDetails.getUsername()) // userKey 값을 넣어줌
+                .claim("userKey", userDetails.getUsername())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -104,6 +105,8 @@ public class JwtTokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails principal = new User(userKey, "", authorities);
+        System.out.println("JwtTokenProvider - User key extracted: " + userKey);
+
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
@@ -126,11 +129,11 @@ public class JwtTokenProvider {
 
     public Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            System.out.println("Parsed Claims: " + claims); // 파싱된 클레임 로그로 출력
+            return claims;
         } catch (ExpiredJwtException e) {
             return e.getClaims();
-
         }
     }
     public String extractUserKeyFromToken(String token) {
