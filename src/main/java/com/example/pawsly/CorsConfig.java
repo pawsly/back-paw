@@ -14,12 +14,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowCredentials(true);
         corsConfig.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인 설정
-        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedHeader("Authorization");
         corsConfig.addAllowedMethod("POST");
         corsConfig.addAllowedMethod("GET");
         corsConfig.addAllowedMethod("DELETE");

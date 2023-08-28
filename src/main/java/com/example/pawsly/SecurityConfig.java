@@ -30,6 +30,8 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/auth").permitAll() // 로그인 처리 API도 인증 없이 접근 가능
