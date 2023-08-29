@@ -91,8 +91,10 @@ public class UserController {
         }
     }
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refreshTokens(@CookieValue("refresh_token") String refreshToken) {
+    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> requestMap) {
         try {
+            String refreshToken = requestMap.get("refreshToken");
+
             // 리프레시 토큰을 사용하여 새로운 액세스 토큰 발급
             String newAccessToken = refreshTokenService.refreshAccessToken(refreshToken);
 
@@ -101,7 +103,6 @@ public class UserController {
             responseBody.put("accessToken", newAccessToken);
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println(e);
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("message", "Failed to refresh tokens");
             return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
