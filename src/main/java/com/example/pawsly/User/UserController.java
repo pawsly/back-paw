@@ -1,7 +1,6 @@
 package com.example.pawsly.User;
 
 import com.example.pawsly.Jwt.JwtTokenProvider;
-import com.example.pawsly.Jwt.Refresh.RefreshTokenService;
 import com.example.pawsly.Jwt.TokenInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,15 +25,13 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenService refreshTokenService; // RefreshTokenService 추가
 
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
-                          UserRepository userRepository,RefreshTokenService refreshTokenService) {
+                          UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.refreshTokenService = refreshTokenService;
     }
 
 
@@ -90,23 +87,6 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
-    @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> requestMap) {
-        try {
-            String refreshToken = requestMap.get("refreshToken");
 
-            // 리프레시 토큰을 사용하여 새로운 액세스 토큰 발급
-            String newAccessToken = refreshTokenService.refreshAccessToken(refreshToken);
-
-            // 새로운 액세스 토큰을 응답으로 반환
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("accessToken", newAccessToken);
-            return new ResponseEntity<>(responseBody, HttpStatus.OK);
-        } catch (Exception e) {
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("message", "Failed to refresh tokens");
-            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
 
