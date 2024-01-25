@@ -31,29 +31,15 @@ public class SecurityConfig{
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers("/auth").permitAll() // 로그인 처리 API도 인증 없이 접근 가능
-                .antMatchers("/post").authenticated() // 작성 API는 인증된 사용자만 접근 가능
-                .antMatchers("/**").permitAll()
+                .antMatchers("/board/**","/user/**").permitAll() // 작성 API는 인증된 사용자만 접근 가능
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/user/login")
-                .loginProcessingUrl("/auth")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/")
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login")
                 .and()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // JwtAuthenticationFilter 추가
