@@ -30,6 +30,10 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .httpBasic().disable()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/board/**","/user/**").permitAll() // 작성 API는 인증된 사용자만 접근 가능
                 .anyRequest().authenticated()
@@ -37,7 +41,6 @@ public class SecurityConfig{
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
-                .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
