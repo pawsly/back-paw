@@ -36,12 +36,12 @@ public class BoardController {
 
     //개인 피드
     @GetMapping("/list/writer")
-    public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String authToken) {
-        System.out.println(authToken); // authToken 값 출력하여 확인
+    public List<Board> getUserPostsByWriter(@RequestHeader("Authorization") String accessToken) {
+        System.out.println(accessToken); // authToken 값 출력하여 확인
 
         String tokenPrefix = "Bearer ";
-        if (authToken != null && authToken.startsWith(tokenPrefix)) {
-            String token = authToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
+        if (accessToken != null && accessToken.startsWith(tokenPrefix)) {
+            String token = accessToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
             System.out.println("Extracted Token: " + token);
 
             return boardService.getPostsByUser(token); // 토큰 값 전달하여 처리
@@ -53,11 +53,10 @@ public class BoardController {
 
     //게시물 작성
     @PostMapping("/post")
-    public ResponseEntity<Board> createPost(@RequestBody Board board, @RequestHeader("Authorization") String authToken) {
+    public ResponseEntity<Board> createPost(@RequestBody Board board, @RequestHeader("Authorization") String accessToken) {
         String tokenPrefix = "Bearer ";
-        if (authToken != null && authToken.startsWith(tokenPrefix)) {
-            String token = authToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
-
+        if (accessToken != null && accessToken.startsWith(tokenPrefix)) {
+            String token = accessToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
             Board createdBoard = boardService.createPost(board, token); // 토큰 값 전달하여 처리
             System.out.println("게시물 작성 완료");
             return ResponseEntity.ok(createdBoard);
@@ -81,9 +80,9 @@ public class BoardController {
     @DeleteMapping("/post/{boardKey}")
     public ResponseEntity<String> deletePost(
             @PathVariable String boardKey,
-            @RequestHeader("Authorization") String authToken) {
+            @RequestHeader("Authorization") String accessToken) {
 
-        boardService.deletePost(boardKey, authToken);
+        boardService.deletePost(boardKey, accessToken);
         System.out.println("게시물 삭제 완료");
         return ResponseEntity.ok("Post deleted successfully");
     }

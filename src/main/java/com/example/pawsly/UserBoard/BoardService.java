@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -48,9 +49,9 @@ public class BoardService {
         return visiblePosts;
     }
     //개인피드
-    public List<Board> getPostsByUser(String authToken) {
-        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
-        System.out.println(authToken+"이건 추출한 토큰");
+    public List<Board> getPostsByUser(String accessToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(accessToken);
+        System.out.println(accessToken+"이건 추출한 토큰");
         System.out.println(userKeyFromToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
@@ -62,9 +63,9 @@ public class BoardService {
     }
 
     // 게시물 작성
-    public Board createPost(Board board, String authToken) {
-        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
-        System.out.println("게시물작성:"+authToken);
+    public Board createPost(Board board, String accessToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(accessToken);
+        System.out.println("게시물작성:"+accessToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
@@ -90,8 +91,8 @@ public class BoardService {
 
 
     // 게시물 수정
-    public Board updatePost(String boardKey, Board updatedBoard, String authToken) {
-        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+    public Board updatePost(String boardKey, Board updatedBoard, String accessToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(accessToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
@@ -114,8 +115,8 @@ public class BoardService {
         return boardRepository.save(existingBoard);
     }
 
-    public void deletePost(String boardKey, String authToken) {
-        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(authToken);
+    public void deletePost(String boardKey, String accessToken) {
+        String userKeyFromToken = jwtTokenProvider.extractUserKeyFromToken(accessToken);
         if (userKeyFromToken == null) {
             throw new RuntimeException("Invalid token or userKey not found in token.");
         }
