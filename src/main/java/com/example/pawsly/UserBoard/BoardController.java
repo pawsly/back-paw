@@ -57,7 +57,6 @@ public class BoardController {
         String tokenPrefix = "Bearer ";
         if (accessToken != null && accessToken.startsWith(tokenPrefix)) {
             String token = accessToken.substring(tokenPrefix.length()); // 접두사 "Bearer " 제거
-
             Board createdBoard = boardService.createPost(board, token); // 토큰 값 전달하여 처리
             System.out.println("게시물 작성 완료");
             return ResponseEntity.ok(createdBoard);
